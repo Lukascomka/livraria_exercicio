@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="./css/cadastroLivros.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastrar Livros</title>
+</head>
+
+<body>
+
+    <head>
+        <nav>
+            <a href="/public/cadastro.html">Cadastrar Usuario</a>
+            <a href="/public/login.html">Login</a>
+        </nav>
+    </head>
+    <main>
+        <div class="container">
+            <div class="conteudo-principal">
+                <div class="optCadastroLivro">
+                    <h1>Cadastre o seu livro!</h1>
+                    <div class="conteudo_livro">
+                        Digite o nome do autor: <input type="text" id="ipt_nomeAutor">
+                        Nome do livro: <input type="text" id="ipt_nomeLivro">
+                    </div>
+                    <select name="genero" id="ipt_genero">
+                        <option value="#"></option>
+                        <option value="horror">Horror</option>
+                        <option value="romance">Romance</option>
+                        <option value="poesia">Poesia</option>
+                        <option value="fantasia">Fantasia</option>
+                    </select>
+
+                </div>
+                <div class="conteudo_estoque">
+
+                    Preço de venda: <input type="number" placeholder="Preco de Venda" id="ipt_precoVenda">
+                    Preço de compra: <input type="number" placeholder="Preco de Compra" id="ipt_precoCompra">
+                    Quantidade em estoque: <input type="number" placeholder="Quantidade em estoque" id="ipt_qtdEstoque">
+                </div>
+                <button onclick="cadastrarLivro()">Cadastrar Livro</button>
+                <div id="outputSucesso"></div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
+<script>
+    function cadastrarLivro() {
+
+        var nomeAutor = ipt_nomeAutor.value;
+        var nomeLivro = ipt_nomeLivro.value;
+        var precoVenda = Number(ipt_precoVenda.value);
+        var precoCompra = Number(ipt_precoCompra.value);
+        var qtdEstoque = Number(ipt_qtdEstoque.value);
+        var genero = ipt_genero.value;
+
+
+
+        
+        for(i=0; i < nomeAutor.length; i++){
+            if(nomeAutor[i] >= 1 ){
+            outputSucesso.innerHTML = ""
+            alert('Digite somente letras no  campo "Nome autor"')
+            return;
+            break;
+        }
+            else{
+                alert('cadastrado com sucesso!')
+                outputSucesso.innerHTML = 'Nome Autor ✅';
+                
+                return;
+                break;
+            }
+        }
+
+        for(i=0; i< nomeLivro.length; i++){
+            if(nomeLivro[i] >=1){
+                outputSucesso.innerHTML = ""
+            alert('Digite somente letras no  campo "Nome autor"')
+                return;
+                break;
+            }
+        
+            else{
+                outputSucesso.innerHTML += `<br> Nome Livro ✅<br>`;
+                return;
+            }
+        }
+        // validei o nome do autor e nome do livro
+
+        
+        // validei a qtd em estoque para nunca ser negativo
+        if (qtdEstoque < 0) {
+            alert('Informe um valor positívo de estoque deste produto!')
+            return;
+        }
+
+
+        if (genero == 'horror' || genero == 'romance' && precoCompra > 100) {
+            precoVenda += precoCompra
+            precoVenda *= 0.22
+            outputSucesso.innerHTML += `Preço de venda do produto : ${precoVenda}✅<br>`
+            outputSucesso.innerHTML += `Preco de compra do produto : ${precoCompra}✅`
+        }
+
+        else if (genero == 'poesia' || genero == 'horror' && precoCompra <= 50) {
+            precoVenda += precoCompra
+            precoVenda *= 0.22
+            outputSucesso.innerHTML += `Preço de venda do produto : ${precoVenda}✅<br>`
+            outputSucesso.innerHTML += `Preco de compra do produto : ${precoCompra}✅`
+
+        }
+        else if (precoCompra > 50 && precoCompra <= 100 && genero == 'fantasia') {
+            precoVenda += precoCompra
+            precoVenda *= 0.22
+            outputSucesso.innerHTML += `Preço de venda do produto : ${precoVenda}✅<br>`
+            outputSucesso.innerHTML += `Preco de compra do produto : ${precoCompra}✅`
+
+        } else {
+            outputSucesso.innerHTML = `Erro a calcular preco de venda do produto`
+            outputSucesso.innerHTML += `<br>Preco de compra do produto : ${precoCompra}✅`
+        }
+
+        fetch("/cadastrarLivro/cadastrarLivro", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                nomeAutor:nomeAutor,
+                nomeLivro:nomeLivro,
+                precoVenda:precoVenda,
+                precoCompra:precoCompra,
+                qtdEstoque:qtdEstoque,
+                genero:genero
+                
+            }),
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok) {
+                    console.log("Livro cadastrado com sucesso pelo front, requisição enviada ao back",resposta)
+                } else {
+                    throw "Houve um erro ao tentar realizar o cadastro deste livro ", resposta;
+                }
+            })
+            .catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+                
+            });
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
