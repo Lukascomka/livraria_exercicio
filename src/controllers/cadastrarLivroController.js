@@ -1,4 +1,4 @@
-var cadastrarLivro  = require("../models/cadastrarLivroModel");
+var cadastrarLivroModel  = require("../models/cadastrarLivroModel");
 
 
 
@@ -32,7 +32,7 @@ function cadastrarLivro(req, res) {
     else{
 
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
-        cadastrarLivro.cadastrarLivro(nomeAutor, nomeLivro, precoVenda, precoCompra, qtdEstoque, genero)
+        cadastrarLivroModel.cadastrarLivro(nomeAutor, nomeLivro, precoVenda, precoCompra, qtdEstoque, genero)
             .then(
                 function (resultado) {
                     res.json(resultado);

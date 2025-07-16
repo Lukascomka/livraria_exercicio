@@ -1,8 +1,8 @@
 var database = require("../database/config")
 
 function cadastrarLivro(
-    nomeAutor,
-    nomeLivro,
+    nomeAutor, TypeError: cadastrarLivroController.cadastrarLivro is not a function;
+nomeLivro,
     precoVenda,
     precoCompra,
     qtdEstoque,
@@ -19,8 +19,14 @@ function cadastrarLivro(
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
     var instrucaoSql = `
-        INSERT INTO usuario (nomeAutor, nomeLivro, precoVenda, precoCompra, qtdEstoque, genero) VALUES ('${nomeAutor}', '${nomeLivro}', '${precoVenda}', '${precoCompra}', '${qtdEstoque}', '${genero}');
+        INSERT INTO Autor (nome,genero) VALUES (
+        '${genero}');
+        Insert into Livro(nome)values('${nomeLivro}');
+        insert into Venda(preco_venda)values('${precoVenda}');
+        insert into Estoque(qtdEstoque)values('${qtdEstoque}');
+
     `;
+
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
