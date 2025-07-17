@@ -1,12 +1,37 @@
 var database = require("../database/config")
 
+
+ function buscarTodos(
+    
+) {
+    console.log("ACESSEI O LIVRO MODEL - buscandoTodos \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n");
+
+
+
+    var instrucaoSqlBuscarLivro = `
+        select * from Livro
+        left join Autor on FkidAutor = idAutor
+        right join Estoque on FkidLivro = idLivro
+        left join Venda on FkidEstoque = idEstoque;
+        `;
+        console.log("Executando a instrução SQL para buscar livros: \n" + instrucaoSqlBuscarLivro);
+   database.executar(instrucaoSqlBuscarLivro);
+   return database.executar(instrucaoSqlBuscarLivro);
+
+}
+
+
+
+
+
 async function cadastrarLivro(
     nomeAutor,
     nomeLivro,
     precoVenda,
     precoCompra,
     qtdEstoque,
-    genero
+    genero,
+    imgLink
 ) {
     console.log("ACESSEI O Cadastro de livro MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():",
         nomeAutor,
@@ -14,23 +39,24 @@ async function cadastrarLivro(
         precoVenda,
         precoCompra,
         qtdEstoque,
-        genero);
+        genero,
+        imgLink);
 
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
     var instrucaoSqlAutor = `
         insert into Autor (nome) VALUES ('${nomeAutor}');
-    `; 
+    `;
     console.log("Executando a instrução SQL para Autor: \n" + instrucaoSqlAutor);
     resultadoAutor = await database.executar(instrucaoSqlAutor);
-       idAutor = resultadoAutor.insertId;
+    idAutor = resultadoAutor.insertId;
 
     var instrucaoSqlLivro = `
-        insert into Livro(nome, autor, genero,FkidAutor) values('${nomeLivro}','${nomeAutor}', '${genero}',${idAutor});
+        insert into Livro(nome, autor, genero,FkidAutor,sinopse) values('${nomeLivro}','${nomeAutor}', '${genero}',${idAutor}, '${imgLink}');
     `;
     console.log("Executando a instrução SQL para Livro: \n" + instrucaoSqlLivro);
     resultadoLivro = await database.executar(instrucaoSqlLivro);
-   
+
     idLivro = resultadoLivro.insertId;
 
     var instrucaoSqlEstoque = `  
@@ -45,10 +71,11 @@ async function cadastrarLivro(
     `;
     console.log("Executando a instrução SQL para Venda: \n" + instrucaoSqlVenda);
     await database.executar(instrucaoSqlVenda);
-    
+
 }
 
 
 module.exports = {
-    cadastrarLivro
+    cadastrarLivro,
+    buscarTodos
 };
