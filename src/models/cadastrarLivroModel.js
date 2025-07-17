@@ -1,8 +1,8 @@
 var database = require("../database/config")
 
-function cadastrarLivro(
-    nomeAutor, TypeError: cadastrarLivroController.cadastrarLivro is not a function;
-nomeLivro,
+async function cadastrarLivro(
+    nomeAutor,
+    nomeLivro,
     precoVenda,
     precoCompra,
     qtdEstoque,
@@ -18,17 +18,34 @@ nomeLivro,
 
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
-    var instrucaoSql = `
-        INSERT INTO Autor (nome,genero) VALUES (
-        '${genero}');
-        Insert into Livro(nome)values('${nomeLivro}');
-        insert into Venda(preco_venda)values('${precoVenda}');
-        insert into Estoque(qtdEstoque)values('${qtdEstoque}');
+    var instrucaoSqlAutor = `
+        insert into Autor (nome) VALUES ('${nomeAutor}');
+    `; 
+    console.log("Executando a instrução SQL para Autor: \n" + instrucaoSqlAutor);
+    resultadoAutor = await database.executar(instrucaoSqlAutor);
+       idAutor = resultadoAutor.insertId;
 
+    var instrucaoSqlLivro = `
+        insert into Livro(nome, autor, genero,FkidAutor) values('${nomeLivro}','${nomeAutor}', '${genero}',${idAutor});
     `;
+    console.log("Executando a instrução SQL para Livro: \n" + instrucaoSqlLivro);
+    resultadoLivro = await database.executar(instrucaoSqlLivro);
+   
+    idLivro = resultadoLivro.insertId;
 
-    console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
+    var instrucaoSqlEstoque = `  
+        insert into Estoque(qtd_estoque, preco_compra,FkidLivro)values(${qtdEstoque},${precoCompra},${idLivro});  
+    `;
+    console.log("Executando a instrução SQL para Estoque: \n" + instrucaoSqlEstoque);
+    resultadoEstoque = await database.executar(instrucaoSqlEstoque);
+    idEstoque = resultadoEstoque.insertId;
+
+    var instrucaoSqlVenda = `
+        insert into Venda(FkidLivro, FkidEstoque,preco_venda)values(${idLivro}, ${idEstoque},${precoVenda});
+    `;
+    console.log("Executando a instrução SQL para Venda: \n" + instrucaoSqlVenda);
+    await database.executar(instrucaoSqlVenda);
+    
 }
 
 
