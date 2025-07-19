@@ -20,9 +20,10 @@ function buscarTodos() {
 
 
 
-function modificarVal(idSeleciona, novoEstoque, novoPreco) {
-    novoEstoque,
-        novoPreco
+function modificarVal(idSeleciona, novoPreco, novoEstoque) {
+    novoPreco,
+    novoEstoque
+        
     var instrucaoSqlModficarValor = `
          update Estoque
     inner join Livro on Estoque.FkidLivro = Livro.idLivro
