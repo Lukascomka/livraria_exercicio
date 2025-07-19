@@ -7,6 +7,18 @@ var cadastrarLivroController = require("../controllers/cadastrarLivroController"
 router.get('/buscandoLivros', function (req, res){
     cadastrarLivroController.buscandoLivros(req, res);
 })
+router.get('/buscando/:idSeleciona', function (req, res){
+    const idSeleciona = req.params.idSeleciona;
+    console.log(idSeleciona, 'router buscando idSeleciona')
+    cadastrarLivroController.buscandoId(req, res);
+})
+
+router.put('/modificandoValores/:idSeleciona', function (req, res){
+    const idSeleciona = req.params.idSeleciona;
+    console.error(idSeleciona,req.params.idSeleciona, 'router de modificar valores no banco')
+    cadastrarLivroController.modificandoValores(req, res);
+})
+
 //Recebendo os dados do html e direcionando para a função cadastrar de usuarioController.js
 router.post("/", function (req, res) {
     cadastrarLivroController.cadastrarLivro(req, res);

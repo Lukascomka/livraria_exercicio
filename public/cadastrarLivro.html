@@ -50,9 +50,13 @@
             </div>
             <button onclick="realizarBusca()">Buscar Livros</button>
             <div id="livrosquery">
-                
+
+
             </div>
             <a href="Atualizar"></a>
+        </div>
+
+        <div>
         </div>
 
     </main>
@@ -62,7 +66,7 @@
 </html>
 <script>
     function cadLivro() {
-
+        livrosquery.innerHTML = ""
         var nomeAutor = ipt_nomeAutor.value;
         var nomeLivro = ipt_nomeLivro.value;
         var precoVenda = Number(ipt_precoVenda.value);
@@ -189,9 +193,10 @@
         return false;
     }
 
-  
-    function realizarBusca() {
 
+    function realizarBusca() {
+        livroAtual = 0;
+        livrosquery.innerHTML = ""
 
         fetch('/cadastrarLivro/buscandoLivros')
             .then(response => {
@@ -207,6 +212,7 @@
                 else if (buscarLivro.length > 0) {
 
                     for (i = 0; i < buscarLivro.length; i++) {
+                        livroAtual = buscarLivro[i].idLivro
                         nomeLivro = buscarLivro[i].nome
                         autor = buscarLivro[i].autor
                         genero = buscarLivro[i].genero
@@ -216,25 +222,27 @@
                         precoParaCompra = parseFloat(buscarLivro[i].preco_compra)
                         console.log(buscarLivro)
                         console.log(
-                            'nome do Livro',nomeLivro,
+                            'nome do Livro', nomeLivro,
                             'nome do autor', autor,
                             'genero', genero,
-                           'estoque', estoque,
-                           'link', sinopse,
+                            'estoque', estoque,
+                            'link', sinopse,
                             'preco para venda', precoParaVenda,
-                           'preco para compra', precoParaCompra)
+                            'preco para compra', precoParaCompra)
 
-                           livrosquery.innerHTML+=`<br>
-                           <img width="80px" height="80px" src="${sinopse}" alt="">
+                        livrosquery.innerHTML += `<br>
+                           <img width="200px" height="200px"src="${sinopse}" id="${livroAtual}"alt="" onclick="modificar(this)">
                        <div id="outAutor">Autor: ${autor}</div>
                        <div id="outLivroname">Nome Livro: ${nomeLivro}</div>
                        <div id="gene">Gênero: ${genero}</div>
                        <div id="outComp">Preço Compra: ${precoParaCompra}</div>
                        <div id="outVend">Preco Venda :${precoParaVenda}</div>
                        <div id="est">Estoque Atual: ${estoque}</div><br>`
-       
-                       }
+
+
+
                     }
+                }
                 else {
                     livrosquery.innerHTML = `"Nenhum livro encontrado`
                 }
@@ -243,6 +251,70 @@
 
     }
 
+    idSeleciona = 0;
+
+    function modificar(imgElement) {
+        idSeleciona = imgElement.id
+
+
+        fetch(`/cadastrarLivro/buscando/${idSeleciona}`)
+            .then(response => {
+                if (!response.ok) {
+                    console.log('HTTP error! status: ', response.status);
+                }
+                return response.json();
+            })
+            .then(buscarLivro => {
+                if (buscarLivro == "") {
+                    'Nenhum livro encontrado'
+                }
+                else if (buscarLivro.length > 0) {
+
+                    for (i = 0; i < buscarLivro.length; i++) {
+                        livroAtual = buscarLivro[i].idLivro
+                        nomeLivro = buscarLivro[i].nome
+                        autor = buscarLivro[i].autor
+                        genero = buscarLivro[i].genero
+                        estoque = parseInt(buscarLivro[i].qtd_estoque)
+                        sinopse = buscarLivro[i].sinopse
+                        precoParaVenda = parseFloat(buscarLivro[i].preco_venda)
+                        precoParaCompra = parseFloat(buscarLivro[i].preco_compra)
+                        console.log(buscarLivro)
+                        console.log(
+                            'nome do Livro', nomeLivro,
+                            'nome do autor', autor,
+                            'genero', genero,
+                            'estoque', estoque,
+                            'link', sinopse,
+                            'preco para venda', precoParaVenda,
+                            'preco para compra', precoParaCompra)
+
+                        livrosquery.innerHTML = ""
+                        livrosquery.innerHTML = `
+                <center>
+                <img width="200px" height="200px"src="${sinopse}"id="${livroAtual}" alt="">
+                <br>
+                Nome do Livro: ${nomeLivro}<br>
+                Preço de compra Atual: ${precoParaCompra}<br>
+                Preço de Venda Atual: ${precoParaVenda}<br>
+                Estoque atual: ${estoque}<br><br> 
+                Novo Preço de Venda: <input type="number" id="ipt_novoPrecoVenda">
+                <br>Nova qtd Em estoque: <input type="number" id="ipt_novoEstoque"
+                <br><br>
+                <button onclick="mudarPreco()">Mudar Preço</button>
+                </center>
+                `
+
+                    }
+
+
+
+                }
+                else {
+                    livrosquery.innerHTML = `Nenhum livro selecionado`
+                }
+
+            });
 
 
 
@@ -250,6 +322,48 @@
 
 
 
+
+
+
+
+
+
+
+    }
+    
+
+  window.mudarPreco = async function mudarPreco(novoPreco, novoEstoque) {
+        novoPreco = Number(ipt_novoPrecoVenda.value);
+        novoEstoque = Number(ipt_novoEstoque.value);
+        
+
+        await fetch(`/cadastrarLivro/modificandoValores/${idSeleciona}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+
+                novoPreco:novoPreco,
+                novoEstoque:novoEstoque
+            }),
+        })
+            .then(function (resposta) {
+                console.log("resposta: ", resposta);
+
+                if (resposta.ok) {
+                    console.log("Livro cadastrado com sucesso pelo front, requisição enviada ao back", resposta)
+                } else {
+                    throw "Houve um erro ao tentar realizar o cadastro deste livro ", resposta;
+                }
+            })
+            .catch(function (resposta) {
+                console.log(`#ERRO: ${resposta}`);
+
+            });
+
+
+    }
 
 
 </script>

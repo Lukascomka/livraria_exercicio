@@ -1,9 +1,7 @@
 var database = require("../database/config")
 
 
- function buscarTodos(
-    
-) {
+function buscarTodos() {
     console.log("ACESSEI O LIVRO MODEL - buscandoTodos \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n");
 
 
@@ -14,13 +12,42 @@ var database = require("../database/config")
         right join Estoque on FkidLivro = idLivro
         left join Venda on FkidEstoque = idEstoque;
         `;
-        console.log("Executando a instrução SQL para buscar livros: \n" + instrucaoSqlBuscarLivro);
-   database.executar(instrucaoSqlBuscarLivro);
-   return database.executar(instrucaoSqlBuscarLivro);
+    console.log("Executando a instrução SQL para buscar livros: \n" + instrucaoSqlBuscarLivro);
+    database.executar(instrucaoSqlBuscarLivro);
+    return database.executar(instrucaoSqlBuscarLivro);
 
 }
 
 
+
+function modificarVal(idSeleciona, novoEstoque, novoPreco) {
+    novoEstoque,
+        novoPreco
+    var instrucaoSqlModficarValor = `
+         update Estoque
+    inner join Livro on Estoque.FkidLivro = Livro.idLivro
+    inner join Venda on Venda.FkidEstoque = Estoque.idEstoque
+    set Venda.preco_venda = ${novoPreco},
+    Estoque.qtd_estoque = ${novoEstoque}
+    where idLivro = ${idSeleciona};
+    
+    
+    `;
+    console.log("Executando a instrução SQL modificando valores: \n" + instrucaoSqlModficarValor);
+    database.executar(instrucaoSqlModficarValor);
+    return database.executar(instrucaoSqlModficarValor);
+}
+function buscarPeloId(idSeleciona) {
+
+    var instrucaoSqlBuscarPeloId = `
+        select * from Livro
+            inner join Estoque on Estoque.FkidLivro = Livro.idLivro
+            inner join Venda on Venda.FkidEstoque = Estoque.idEstoque
+            where idLivro = ${idSeleciona}`;
+    console.log("Executando a instrução SQL para buscar livro por id: \n " + instrucaoSqlBuscarPeloId);
+    database.executar(instrucaoSqlBuscarPeloId);
+    return database.executar(instrucaoSqlBuscarPeloId);
+}
 
 
 
@@ -77,5 +104,7 @@ async function cadastrarLivro(
 
 module.exports = {
     cadastrarLivro,
-    buscarTodos
+    buscarTodos,
+    buscarPeloId,
+    modificarVal
 };
