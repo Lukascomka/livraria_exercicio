@@ -18,12 +18,43 @@ function buscarTodos() {
 
 }
 
+function buscarAutoresPreco() {
+    var instrucaoSqlAutoresPreco = `
+        select 
+        	Autor.nome,
+            Livro.nome,
+            Venda.preco_venda
+        		from
+        		Livro
+        		join Venda on Livro.idLivro = Venda.FkidLivro
+                join Autor on Livro.FkidAutor = Autor.idAutor
+                order by Venda.preco_venda desc
+                limit 3;
+    `;
+    console.log("Executando a query para trazer os autores com maiores preço");
+    database.executar(instrucaoSqlAutoresPreco);
+    return database.executar(instrucaoSqlAutoresPreco);
+}
 
+
+
+function buscarQtd() {
+    var instruSqlQuantidade = `
+    select genero, count(*) as quantidade
+        from Livro
+        group by genero
+        order by quantidade desc
+        limit 1;
+`;
+    console.log("Executando a instrução SQL que busca a quantidade de valores: \n" + instruSqlQuantidade);
+    database.executar(instruSqlQuantidade);
+    return database.executar(instruSqlQuantidade);
+}
 
 function modificarVal(idSeleciona, novoPreco, novoEstoque) {
     novoPreco,
-    novoEstoque
-        
+        novoEstoque
+
     var instrucaoSqlModficarValor = `
          update Estoque
     inner join Livro on Estoque.FkidLivro = Livro.idLivro
@@ -107,5 +138,7 @@ module.exports = {
     cadastrarLivro,
     buscarTodos,
     buscarPeloId,
-    modificarVal
+    modificarVal,
+    buscarQtd,
+    buscarAutoresPreco
 };

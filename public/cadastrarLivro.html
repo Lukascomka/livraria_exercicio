@@ -59,7 +59,26 @@
         <div>
         </div>
 
+        <div class="popup">
+            <div class="containerpopu">
+                <center>
+                    <div id="info">
+
+
+                    </div>
+                </center>
+            </div>
+        </div>
+        <div class="popup">
+            <div class="containerpopu">
+                <center>
+                    <div id="info2">
+                    </div>
+                </center>
+            </div>
+        </div>
     </main>
+    <footer></footer>
 
 </body>
 
@@ -330,12 +349,12 @@
 
 
     }
-    
 
-  window.mudarPreco = async function mudarPreco(novoPreco, novoEstoque) {
+
+    window.mudarPreco = async function mudarPreco(novoPreco, novoEstoque) {
         novoPreco = Number(ipt_novoPrecoVenda.value);
         novoEstoque = Number(ipt_novoEstoque.value);
-        
+
 
         await fetch(`/cadastrarLivro/modificandoValores/${idSeleciona}`, {
             method: "PUT",
@@ -344,8 +363,8 @@
             },
             body: JSON.stringify({
 
-                novoPreco:novoPreco,
-                novoEstoque:novoEstoque
+                novoPreco: novoPreco,
+                novoEstoque: novoEstoque
             }),
         })
             .then(function (resposta) {
@@ -366,4 +385,58 @@
     }
 
 
+
+
+
+    function kpi() {
+        fetch(`/cadastrarLivro/buscandoQuantidade`)
+            .then(response => {
+                if (!response.ok) {
+                    console.error('HTTP error! status: ', response.status);
+                }
+                return response.json();
+            })
+            .then(alertasLivros => {
+                if (alertasLivros == '') {
+                    info.innerHTML = "Nenhum livro encontrado"
+                }
+                else if (alertasLivros.length > 0) {
+                    for (i = 0; i < alertasLivros.length; i++) {
+                        genero = alertasLivros[i].genero,
+                            quantidade = alertasLivros[i].quantidade
+                        info.innerHTML = `
+                            <div id="sirene">🚨</div>
+                            <div id="genero">Genero: ${genero}</div>
+                            <div id="quantidadeLivro">Quantidade: ${quantidade}</div>
+                            `
+                    }
+
+                }
+
+            })
+    }
+
+    function autoresMaisCaros() {
+        fetch('/cadastrarLivro/BuscarAutores')
+            .then(alertasLivros => {
+                if (alertasLivros == '') {
+                    info2.innerHTML = 'Nenhum autor encontrado';
+                }
+                else if (alertasLivros.length > 0) {
+                    for (i = 0; i < alertasLivros.length; i++) {
+                        autor = alertasLivros[i].Autor,
+                        Livro = alertasLivros[i].Livro,
+                        quantidade = alertasLivros[i].preco_venda
+                        info2.innerHTML = `
+                    <div id="sirene">🚨</div>
+                        <div id="generoMaisCaro">Autores: ${genero}</div>
+                        <div id="valoresAutores">Preço: ${quantidade}</div> 
+                        
+                `;
+                    }
+                }
+            })
+    }
+    setInterval(autoresMaisCaros, 10000)
+    setInterval(kpi, 10000)
 </script>

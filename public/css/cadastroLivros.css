@@ -1,24 +1,25 @@
-nav{
+nav {
     background-color: blue;
     display: flex;
     flex-direction: row-reverse;
     gap: 50px;
-    
-    
+
+
 }
-nav a{
+
+nav a {
     color: white;
     margin: 10px;
 
 }
 
-main{
+main {
     display: flex;
     flex-direction: column;
 
 }
 
-main .container{
+main .container {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -28,8 +29,58 @@ main .container{
     height: 100%;
 }
 
-.conteudo-principal{
-    display:  flex;
+.conteudo-principal {
+    display: flex;
     flex-direction: column;
     gap: 20px;
 }
+
+.popup {
+    position: absolute;
+    background-color: blue;
+    width: 310px;
+    height: 210px;
+    border-radius: 20px;
+    align-content: end;
+    margin:40px;
+    display: flex;
+    
+
+
+}
+
+
+.containerpopu{
+    background-color: rgb(211, 236, 161);;
+    width: 97%;
+    height: 97%;
+    border-radius: 15px;
+    align-self: center !important;
+    justify-self: center;
+    margin: 5px;
+
+    
+}
+#sirene{
+    width: 44px;
+    height: 40px;
+}
+#genero{
+    color: red;
+    font-size: 50px;
+}
+#quantidadeLivro{
+    color: blue;   
+        font-size: 30px;
+}
+
+#generoMaisCaro{
+
+    color: red;
+    font-size: 50px;
+}
+#valoresAutores{
+
+    color: blue;   
+        font-size: 30px;
+}   

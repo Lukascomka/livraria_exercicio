@@ -3,6 +3,13 @@ var router = express.Router();
 
 var cadastrarLivroController = require("../controllers/cadastrarLivroController");
 
+router.get('/buscandoQuantidade', function(req, res){
+    
+    cadastrarLivroController.buscarQuantidade(req, res);
+})
+router.get('/BuscarAutores', function (req, res){
+    cadastrarLivroController.buscarAutores(req, res);
+})
 
 router.get('/buscandoLivros', function (req, res){
     cadastrarLivroController.buscandoLivros(req, res);

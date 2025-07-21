@@ -18,7 +18,19 @@ function buscandoLivros(req, res){
 }
 
 
-
+function buscarAutores(req, res){
+    cadastrarLivroModel.buscarAutoresPreco()
+    .then(function(resultado){
+        if(resultado.length>0){
+            res.status(200).json(resultado);
+        }
+        else{
+            res.status(204).send('Nenhuma quantidade de autor encontrada')
+        }
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage)
+    });
+}
 
 function modificandoValores(req, res){
     const  idSeleciona = req.params.idSeleciona;
@@ -41,6 +53,20 @@ function modificandoValores(req, res){
     }).catch(function(erro){
         res.status(500).json(erro.sqlMessage);
     });
+}
+function buscarQuantidade(req, res){
+    
+    cadastrarLivroModel.buscarQtd()
+    .then(function (resultado){
+        if(resultado.length > 0){
+            res.status(200).json(resultado);
+        }else{
+            res.status(204).send('nenhuma quantidade encontrada')
+        }
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage);
+    });
+    
 }
 // sempre que vou realizar uma requisição do fetch com algum valor no url, tenho que passar dentro do controller o valor como req.parms.valor; e passar dentro da função funcaobuscarpeloid(id ou valor) para que a query consiga buscar pelo valor que chega até ele 
 function buscandoId(req, res){
@@ -116,5 +142,7 @@ module.exports = {
     cadastrarLivro,
     buscandoLivros,
     buscandoId,
-    modificandoValores
+    modificandoValores,
+    buscarQuantidade,
+    buscarAutores
 }
