@@ -1,89 +1,16 @@
 var cadastrarLivroModel  = require("../models/cadastrarLivroModel");
 
 
-function buscandoLivros(req, res){
-    cadastrarLivroModel.buscarTodos()
-    .then(function (resultado){
-        if(resultado.length > 0){
-            //realizei a busca e mostrei no front
-            res.status(200).json(resultado);
-        }else{
-            //realizou a busca mas não tem nada no banco
-            res.status(204).send("Ainda não há livros para exibir")
-        }
-
-    }).catch(function(erro){
-        res.status(500).json(erro.sqlMessage);
-    });
-}
 
 
-function buscarAutores(req, res){
-    cadastrarLivroModel.buscarAutoresPreco()
-    .then(function(resultado){
-        if(resultado.length>0){
-            res.status(200).json(resultado);
-        }
-        else{
-            res.status(204).send('Nenhuma quantidade de autor encontrada')
-        }
-    }).catch(function(erro){
-        res.status(500).json(erro.sqlMessage)
-    });
-}
 
-function modificandoValores(req, res){
-    const  idSeleciona = req.params.idSeleciona;
-    var novoPreco = req.body.novoPreco;
-    var novoEstoque = req.body.novoEstoque;
 
-    console.log(idSeleciona, 'dentro da controller')
-    cadastrarLivroModel.modificarVal(
-        idSeleciona,
-        novoPreco,
-        novoEstoque
-    )
-    .then(function (resultado){
-        if(resultado.length>0){
-            res.status(200).json(resultado);
 
-        }else{
-            res.status(204).send("impossível modificar valor do livro erro erro no json")
-        }
-    }).catch(function(erro){
-        res.status(500).json(erro.sqlMessage);
-    });
-}
-function buscarQuantidade(req, res){
-    
-    cadastrarLivroModel.buscarQtd()
-    .then(function (resultado){
-        if(resultado.length > 0){
-            res.status(200).json(resultado);
-        }else{
-            res.status(204).send('nenhuma quantidade encontrada')
-        }
-    }).catch(function(erro){
-        res.status(500).json(erro.sqlMessage);
-    });
-    
-}
-// sempre que vou realizar uma requisição do fetch com algum valor no url, tenho que passar dentro do controller o valor como req.parms.valor; e passar dentro da função funcaobuscarpeloid(id ou valor) para que a query consiga buscar pelo valor que chega até ele 
-function buscandoId(req, res){
-    const idSeleciona = req.params.idSeleciona;
-    console.log(idSeleciona,'na controller vendo o idSeleciona');
-    cadastrarLivroModel.buscarPeloId(idSeleciona)
-    .then(function (resultado){
-        if(resultado.length>0){
-            res.status(200).json(resultado);
-        }else{
-            res.status(204).send("Livro especifico não encontrado")
-        }
 
-    }).catch(function(erro){
-        res.status(500).json(erro.sqlMessage);
-    });
-}
+
+
+
+
 
 
 
@@ -137,6 +64,105 @@ function cadastrarLivro(req, res) {
     }
 }
 
+function buscandoLivros(req, res){
+    cadastrarLivroModel.buscarTodos()
+    .then(function (resultado){
+        if(resultado.length > 0){
+            //realizei a busca e mostrei no front
+            res.status(200).json(resultado);
+        }else{
+            //realizou a busca mas não tem nada no banco
+            res.status(204).send("Ainda não há livros para exibir")
+        }
+
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function buscandoId(req, res){
+    // sempre que vou realizar uma requisição do fetch com algum valor no url, tenho que passar dentro do controller o valor como req.parms.valor; e passar dentro da função funcaobuscarpeloid(id ou valor) para que a query consiga buscar pelo valor que chega até ele 
+    const idSeleciona = req.params.idSeleciona;
+    console.log(idSeleciona,'na controller vendo o idSeleciona');
+    cadastrarLivroModel.buscarPeloId(idSeleciona)
+    .then(function (resultado){
+        if(resultado.length>0){
+            res.status(200).json(resultado);
+        }else{
+            res.status(204).send("Livro especifico não encontrado")
+        }
+
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+function modificandoValores(req, res){
+    const  idSeleciona = req.params.idSeleciona;
+    var novoPreco = req.body.novoPreco;
+    var novoEstoque = req.body.novoEstoque;
+
+    console.log(idSeleciona, 'dentro da controller')
+    cadastrarLivroModel.modificarVal(
+        idSeleciona,
+        novoPreco,
+        novoEstoque
+    )
+    .then(function (resultado){
+        if(resultado.length>0){
+            res.status(200).json(resultado);
+
+        }else{
+            res.status(204).send("impossível modificar valor do livro erro erro no json")
+        }
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage);
+    });
+}
+
+
+function buscarQuantidade(req, res){
+    
+    cadastrarLivroModel.buscarQtd()
+    .then(function (resultado){
+        if(resultado.length > 0){
+            res.status(200).json(resultado);
+        }else{
+            res.status(204).send('nenhuma quantidade encontrada')
+        }
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage);
+    });
+    
+}
+
+function buscarAutores(req, res){
+    cadastrarLivroModel.buscarAutoresPreco()
+    .then(function(resultado){
+        if(resultado.length>0){
+            res.status(200).json(resultado);
+        }
+        else{
+            res.status(204).send('Nenhuma quantidade de autor encontrada')
+        }
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage)
+    });
+}
+
+
+function qtdGenero(req, res){
+    cadastrarLivroModel.buscarQuantidadeGenero()
+    .then(function(resultado){
+        if(resultado.length>0){
+            res.status(200).json(resultado);
+        }else{
+            res.status(204).send('nenhuma quantidade de livro por genero encontrado')
+        }
+    }).catch(function(erro){
+        res.status(500).json(erro.sqlMessage)
+    })
+}
 module.exports = {
     
     cadastrarLivro,
@@ -144,5 +170,6 @@ module.exports = {
     buscandoId,
     modificandoValores,
     buscarQuantidade,
-    buscarAutores
+    buscarAutores,
+    qtdGenero
 }

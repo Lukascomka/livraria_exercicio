@@ -18,6 +18,30 @@ function buscarTodos() {
 
 }
 
+// função que busca a quantidade de genero e mostra a soma
+function buscarQuantidadeGenero() {
+    var instrucaoSQLQuantidade = `
+            select 
+        Livro.genero,
+        sum(Estoque.qtd_estoque) AS quantidade
+            from
+        Livro
+            left join 
+        Estoque on Livro.idLivro = Estoque.FkidLivro
+            group by     
+        Livro.genero
+            order by 
+        quantidade desc;
+
+`;
+console.log('executando a query para trazer quantidade de livros por genero');
+database.executar(instrucaoSQLQuantidade);
+return database.executar(instrucaoSQLQuantidade);
+}
+
+
+
+
 function buscarAutoresPreco() {
     var instrucaoSqlAutoresPreco = `
         select 
@@ -140,5 +164,6 @@ module.exports = {
     buscarPeloId,
     modificarVal,
     buscarQtd,
-    buscarAutoresPreco
+    buscarAutoresPreco,
+    buscarQuantidadeGenero
 };

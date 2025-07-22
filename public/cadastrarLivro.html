@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="./css/cadastroLivros.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <title>Cadastrar Livros</title>
 </head>
@@ -49,15 +51,21 @@
 
             </div>
             <button onclick="realizarBusca()">Buscar Livros</button>
+            <div>
+                <canvas id="myChart"></canvas>
+            </div>
             <div id="livrosquery">
 
 
             </div>
             <a href="Atualizar"></a>
+
         </div>
 
-        <div>
+
         </div>
+
+
         <div class="TodasKPI">
 
             <div class="popup">
@@ -80,13 +88,78 @@
                 </div>
 
             </div>
+
+
     </main>
     <footer></footer>
 
 </body>
 
 </html>
+
+
+
 <script>
+    const ctx = document.getElementById('myChart');
+
+
+
+    function grafico() {
+
+        fetch('/cadastrarLivro/buscarQtdLivro')
+            .then(response => {
+                if (!response.ok) {
+                    console.log('HTTP error! status: ', response.status);
+                }
+                return response.json();
+            }).then(dadosGraficos => {
+                if (dadosGraficos.length == '') {
+                    infoGrafico.innerHTML = `Impossível rendernizar dados no gráfico`
+                }
+                else if (dadosGraficos.length > 0) {
+                    for (i = 0; i < dadosGraficos.length; i++) {
+                        nomeLivro = dadosGraficos[i].nome,
+                            genero = dadosGraficos[i].genero,
+                            quantidade = dadosGraficos[i].quantidade
+
+
+                        new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: [
+                                    dadosGraficos[0].genero, dadosGraficos[1].genero, dadosGraficos[2].genero,
+                                    dadosGraficos[3].genero],
+                                datasets: [{
+                                    label: 'Quantidade de livros por categoria',
+                                    data: [dadosGraficos[0].quantidade, dadosGraficos[1].quantidade,dadosGraficos[2].quantidade, dadosGraficos[3].quantidade
+                                ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+
+
+
+                    }
+                }
+            })
+
+
+
+
+    }
+
+
+
+
+
     function cadLivro() {
         livrosquery.innerHTML = ""
         var nomeAutor = ipt_nomeAutor.value;
@@ -228,7 +301,7 @@
                 return response.json();
             })
             .then(buscarLivro => {
-                if (buscarLivro == "") {
+                if (buscarLivro.length == "") {
                     'Nenhum livro encontrado'
                 }
                 else if (buscarLivro.length > 0) {
@@ -421,13 +494,13 @@
 
     function autoresMaisCaros() {
         fetch('/cadastrarLivro/BuscarAutores')
-       .then(response => {
+            .then(response => {
                 if (!response.ok) {
                     console.error('HTTP error! status: ', response.status);
                 }
                 return response.json();
             })
-            .then(alertasLivros =>  {
+            .then(alertasLivros => {
                 if (alertasLivros == '') {
                     info2.innerHTML = 'Nenhum autor encontrado';
                 }
@@ -446,6 +519,9 @@
                 }
             })
     }
+
+
     setInterval(autoresMaisCaros, 10000)
     setInterval(kpi, 10000)
+    setInterval(grafico, 10000)
 </script>
